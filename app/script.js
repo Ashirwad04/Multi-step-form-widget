@@ -590,20 +590,22 @@ let documentRecordId = null;
 function saveDocuments(){
 
 
-    const resume =
-    document.getElementById("resume").files[0];
+    const resumeFiles =
+    document.getElementById("resume").files;
 
-    const tenth =
-    document.getElementById("tenthMarksheet").files[0];
+    const tenthFiles =
+    document.getElementById("tenthMarksheet").files;
 
-    const twelfth =
-    document.getElementById("twelfthMarksheet").files[0];
+    const twelfthFiles =
+    document.getElementById("twelfthMarksheet").files;
 
 
 
-    // VALIDATION
-
-    if(!resume || !tenth || !twelfth){
+    if(
+        resumeFiles.length == 0 ||
+        tenthFiles.length == 0 ||
+        twelfthFiles.length == 0
+    ){
 
         alert("Please upload all documents");
 
@@ -613,9 +615,7 @@ function saveDocuments(){
 
 
 
-    // ======================================
-    // STEP 1 : CREATE EMPTY RECORD
-    // ======================================
+    // CREATE RECORD
 
     ZOHO.CREATOR.API.addRecord({
 
@@ -635,31 +635,76 @@ function saveDocuments(){
 
         if(response.code == 3000){
 
-            alert("Record Created");
-
-
-
-            // SAVE RECORD ID
-
             documentRecordId = response.data.ID;
 
 
 
-            console.log("Document Record ID :",
-            documentRecordId);
+            // UPLOAD FILES
+
+            uploadMultipleFiles(
+                "Upload_Resume",
+                resumeFiles
+            );
+
+            uploadMultipleFiles(
+                "Upload_10th_Marksheet",
+                tenthFiles
+            );
+
+            uploadMultipleFiles(
+                "Upload_12th_Marksheet",
+                twelfthFiles
+            );
 
 
 
+            alert("Documents Uploaded Successfully");
 
-            // ======================================
-            // STEP 2 : UPLOAD RESUME
-            // ======================================
 
-            uploadResume(resume);
+
+            document.getElementById("documentBtn").innerText =
+            "Update Documents";
+
+
+
+            document.getElementById("documentBtn").onclick =
+            updateDocuments;
 
         }
 
     });
+
+}
+
+
+function uploadMultipleFiles(fieldName, files){
+
+    for(let i = 0; i < files.length; i++){
+
+        let config = {
+
+            appName : APP_NAME,
+
+            reportName : "Documents_Upload_Report",
+
+            id : documentRecordId,
+
+            fieldName : fieldName,
+
+            file : files[i]
+
+        };
+
+
+
+        ZOHO.CREATOR.API.uploadFile(config)
+        .then(function(response){
+
+            console.log(response);
+
+        });
+
+    }
 
 }
 
@@ -815,252 +860,57 @@ function upload12th(fileObject){
 // ======================================
 // UPDATE DOCUMENTS
 // ======================================
-
 function updateDocuments(){
 
-    const resume =
-    document.getElementById("resume").files[0];
 
-    const tenth =
-    document.getElementById("tenthMarksheet").files[0];
+    const resumeFiles =
+    document.getElementById("resume").files;
 
-    const twelfth =
-    document.getElementById("twelfthMarksheet").files[0];
+    const tenthFiles =
+    document.getElementById("tenthMarksheet").files;
 
-
-
-    // ======================================
-    // UPDATE RESUME
-    // ======================================
-
-    if(resume){
-
-        var resumeConfig = {
-
-            appName : APP_NAME,
-
-            reportName : "Documents_Upload_Report",
-
-            id : documentRecordId,
-
-            fieldName : "Upload_Resume",
-
-            file : resume
-
-        };
+    const twelfthFiles =
+    document.getElementById("twelfthMarksheet").files;
 
 
 
-        ZOHO.CREATOR.API.uploadFile(resumeConfig)
-        .then(function(response){
+    if(resumeFiles.length > 0){
 
-            console.log("Resume Updated");
-
-            console.log(response);
-
-        });
+        uploadMultipleFiles(
+            "Upload_Resume",
+            resumeFiles
+        );
 
     }
 
 
 
-    // ======================================
-    // UPDATE 10TH
-    // ======================================
+    if(tenthFiles.length > 0){
 
-    if(tenth){
-
-        var tenthConfig = {
-
-            appName : APP_NAME,
-
-            reportName : "Documents_Upload_Report",
-
-            id : documentRecordId,
-
-            fieldName : "Upload_10th_Marksheet",
-
-            file : tenth
-
-        };
-
-
-
-        ZOHO.CREATOR.API.uploadFile(tenthConfig)
-        .then(function(response){
-
-            console.log("10th Updated");
-
-            console.log(response);
-
-        });
+        uploadMultipleFiles(
+            "Upload_10th_Marksheet",
+            tenthFiles
+        );
 
     }
 
 
 
-    // ======================================
-    // UPDATE 12TH
-    // ======================================
+    if(twelfthFiles.length > 0){
 
-    if(twelfth){
-
-        var twelfthConfig = {
-
-            appName : APP_NAME,
-
-            reportName : "Documents_Upload_Report",
-
-            id : documentRecordId,
-
-            fieldName : "Upload_12th_Marksheet",
-
-            file : twelfth
-
-        };
-
-
-
-        ZOHO.CREATOR.API.uploadFile(twelfthConfig)
-        .then(function(response){
-
-            console.log("12th Updated");
-
-            console.log(response);
-
-            alert("Documents Updated Successfully");
-
-        });
+        uploadMultipleFiles(
+            "Upload_12th_Marksheet",
+            twelfthFiles
+        );
 
     }
+
+
+
+    alert("Documents Updated Successfully");
 
 }
 
 
 
 
-// ======================================
-// VIEW DOCUMENTS
-// ======================================
-
-function viewUploadedDocuments(){
-
-
-
-    ZOHO.CREATOR.API.getRecordById({
-
-        appName:APP_NAME,
-
-        reportName:"Documents_Upload_Report",
-
-        id:documentRecordId
-
-    }).then(function(response){
-
-        console.log(response);
-
-
-
-        if(response.code == 3000){
-
-
-
-            // RESUME
-
-            if(response.data.Upload_Resume){
-
-                let resumeFile =
-                response.data.Upload_Resume;
-
-
-
-                document.getElementById("resumeView").innerHTML = `
-
-                    <div class="file-card">
-
-                        <span>
-                        Resume Uploaded
-                        </span>
-
-                        <a href="${resumeFile}"
-                        target="_blank">
-
-                        View
-
-                        </a>
-
-                    </div>
-
-                `;
-
-            }
-
-
-
-            // 10TH
-
-            if(response.data.Upload_10th_Marksheet){
-
-                let tenthFile =
-                response.data.Upload_10th_Marksheet;
-
-
-
-                document.getElementById("tenthView").innerHTML = `
-
-                    <div class="file-card">
-
-                        <span>
-                        10th Marksheet
-                        </span>
-
-                        <a href="${tenthFile}"
-                        target="_blank">
-
-                        View
-
-                        </a>
-
-                    </div>
-
-                `;
-
-            }
-
-
-
-            // 12TH
-
-            if(response.data.Upload_12th_Marksheet){
-
-                let twelfthFile =
-                response.data.Upload_12th_Marksheet;
-
-
-
-                document.getElementById("twelfthView").innerHTML = `
-
-                    <div class="file-card">
-
-                        <span>
-                        12th Marksheet
-                        </span>
-
-                        <a href="${twelfthFile}"
-                        target="_blank">
-
-                        View
-
-                        </a>
-
-                    </div>
-
-                `;
-
-            }
-
-        }
-
-    });
-
-}
