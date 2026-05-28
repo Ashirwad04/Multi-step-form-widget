@@ -2,6 +2,12 @@ const APP_NAME = "ashirwad";
 
 let currentStep = 1;
 
+
+
+
+
+
+
 const formSteps = document.querySelectorAll(".form-step");
 const steps = document.querySelectorAll(".step");
 
@@ -576,331 +582,293 @@ function updateEducationDetails(){
 
 }
 
-// ======================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// =====================================
 // DOCUMENT RECORD ID
-// ======================================
+// =====================================
 
 let documentRecordId = null;
 
 
-// ======================================
-// SAVE DOCUMENTS
-// ======================================
+// =====================================
+// FILE ARRAYS
+// =====================================
 
-function saveDocuments(){
+let resumeFiles = [];
 
+let tenthFiles = [];
 
-    const resumeFiles =
-    document.getElementById("resume").files;
-
-    const tenthFiles =
-    document.getElementById("tenthMarksheet").files;
-
-    const twelfthFiles =
-    document.getElementById("twelfthMarksheet").files;
+let twelfthFiles = [];
 
 
+// =====================================
+// HANDLE FILES
+// =====================================
 
-    if(
-        resumeFiles.length == 0 ||
-        tenthFiles.length == 0 ||
-        twelfthFiles.length == 0
-    ){
+function handleFiles(event,type){
 
-        alert("Please upload all documents");
+    const files = Array.from(event.target.files);
 
-        return;
+    // RESUME
+
+    if(type == "resume"){
+
+        resumeFiles.push(...files);
+
+        renderFiles(
+            resumeFiles,
+            "resumePreview",
+            "resume"
+        );
 
     }
 
+    // 10TH
+
+    if(type == "tenth"){
+
+        tenthFiles.push(...files);
+
+        renderFiles(
+            tenthFiles,
+            "tenthPreview",
+            "tenth"
+        );
+
+    }
+
+    // 12TH
+
+    if(type == "twelfth"){
+
+        twelfthFiles.push(...files);
+
+        renderFiles(
+            twelfthFiles,
+            "twelfthPreview",
+            "twelfth"
+        );
+
+    }
+
+    event.target.value = "";
+
+}
 
 
-    // CREATE RECORD
+// =====================================
+// RENDER FILES
+// =====================================
 
-    ZOHO.CREATOR.API.addRecord({
+function renderFiles(files,previewId,type){
 
-        appName:APP_NAME,
+    const preview =
+    document.getElementById(previewId);
 
-        formName:"Documents_Upload",
+    preview.innerHTML = "";
 
-        data:{
-            data:{}
-        }
+    files.forEach((file,index)=>{
 
-    }).then(function(response){
+        preview.innerHTML += `
 
-        console.log(response);
+            <div class="file-item">
 
+                <span>${file.name}</span>
 
+                <button class="remove-btn"
+                onclick="removeFile('${type}',${index})">
 
-        if(response.code == 3000){
+                    Remove
 
-            documentRecordId = response.data.ID;
+                </button>
 
+            </div>
 
-
-            // UPLOAD FILES
-
-            uploadMultipleFiles(
-                "Upload_Resume",
-                resumeFiles
-            );
-
-            uploadMultipleFiles(
-                "Upload_10th_Marksheet",
-                tenthFiles
-            );
-
-            uploadMultipleFiles(
-                "Upload_12th_Marksheet",
-                twelfthFiles
-            );
-
-
-
-            alert("Documents Uploaded Successfully");
-
-
-
-            document.getElementById("documentBtn").innerText =
-            "Update Documents";
-
-
-
-            document.getElementById("documentBtn").onclick =
-            updateDocuments;
-
-        }
+        `;
 
     });
 
 }
 
 
-function uploadMultipleFiles(fieldName, files){
+// =====================================
+// REMOVE FILE
+// =====================================
 
-    for(let i = 0; i < files.length; i++){
+function removeFile(type,index){
 
-        let config = {
+    if(type == "resume"){
 
-            appName : APP_NAME,
+        resumeFiles.splice(index,1);
 
-            reportName : "Documents_Upload_Report",
+        renderFiles(
+            resumeFiles,
+            "resumePreview",
+            "resume"
+        );
 
-            id : documentRecordId,
+    }
 
-            fieldName : fieldName,
+    if(type == "tenth"){
 
-            file : files[i]
+        tenthFiles.splice(index,1);
 
-        };
+        renderFiles(
+            tenthFiles,
+            "tenthPreview",
+            "tenth"
+        );
+
+    }
+
+    if(type == "twelfth"){
+
+        twelfthFiles.splice(index,1);
+
+        renderFiles(
+            twelfthFiles,
+            "twelfthPreview",
+            "twelfth"
+        );
+
+    }
+
+}
 
 
+// =====================================
+// SAVE DOCUMENTS
+// =====================================
 
-        ZOHO.CREATOR.API.uploadFile(config)
-        .then(function(response){
+function saveDocuments(){
 
-            console.log(response);
+    // FIRST TIME CREATE
+
+    if(!documentRecordId){
+
+        ZOHO.CREATOR.API.addRecord({
+
+            appName:APP_NAME,
+
+            formName:"Documents_Upload",
+
+            data:{
+                data:{}
+            }
+
+        }).then(function(response){
+
+            if(response.code == 3000){
+
+                documentRecordId =
+                response.data.ID;
+
+                uploadAllFiles();
+
+            }
 
         });
 
     }
 
-}
+    // UPDATE
 
-// ======================================
-// UPLOAD RESUME
-// ======================================
+    else{
 
-function uploadResume(fileObject){
+        uploadAllFiles();
 
-    var config = {
-
-        appName : APP_NAME,
-
-        reportName : "Documents_Upload_Report",
-
-        id : documentRecordId,
-
-        fieldName : "Upload_Resume",
-
-        file : fileObject
-
-    };
-
-
-
-    ZOHO.CREATOR.API.uploadFile(config)
-    .then(function(response){
-
-        console.log(response);
-
-        if(response.code == 3000){
-
-            console.log("Resume Uploaded");
-
-
-
-            // NEXT FILE
-
-            const tenth =
-            document.getElementById("tenthMarksheet").files[0];
-
-            upload10th(tenth);
-
-        }
-
-    });
+    }
 
 }
 
-// ======================================
-// UPLOAD 10TH
-// ======================================
 
-function upload10th(fileObject){
 
-    var config = {
+// =====================================
+// UPLOAD ALL FILES
+// =====================================
 
-        appName : APP_NAME,
+async function uploadAllFiles(){
 
-        reportName : "Documents_Upload_Report",
+    // =====================================
+    // CLEAR OLD FILES FIRST
+    // =====================================
 
-        id : documentRecordId,
+    await clearFieldFiles("Upload_Resume");
 
-        fieldName : "Upload_10th_Marksheet",
+    await clearFieldFiles("Upload_10th_Marksheet");
 
-        file : fileObject
-
-    };
+    await clearFieldFiles("Upload_12th_Marksheet");
 
 
 
-    ZOHO.CREATOR.API.uploadFile(config)
-    .then(function(response){
+    // =====================================
+    // UPLOAD RESUME FILES
+    // =====================================
 
-        console.log(response);
+    for(let file of resumeFiles){
 
-        if(response.code == 3000){
-
-            console.log("10th Uploaded");
-
-
-
-            // NEXT FILE
-
-            const twelfth =
-            document.getElementById("twelfthMarksheet").files[0];
-
-            upload12th(twelfth);
-
-        }
-
-    });
-
-}
-
-// ======================================
-// UPLOAD 12TH
-// ======================================
-
-function upload12th(fileObject){
-
-    var config = {
-
-        appName : APP_NAME,
-
-        reportName : "Documents_Upload_Report",
-
-        id : documentRecordId,
-
-        fieldName : "Upload_12th_Marksheet",
-
-        file : fileObject
-
-    };
-
-
-
-    ZOHO.CREATOR.API.uploadFile(config)
-    .then(function(response){
-
-        console.log(response);
-
-        if(response.code == 3000){
-
-            console.log("12th Uploaded");
-
-
-
-            alert("All Documents Uploaded Successfully");
-
-
-
-            // COMPLETE STEP
-
-            steps[2].classList.add("completed");
-
-
-
-            // BUTTON TEXT
-
-            document.getElementById("documentBtn").innerText =
-            "Update Documents";
-
-        }
-
-    });
-
-}
-
-
-
-
-// ======================================
-// UPDATE DOCUMENTS
-// ======================================
-function updateDocuments(){
-
-
-    const resumeFiles =
-    document.getElementById("resume").files;
-
-    const tenthFiles =
-    document.getElementById("tenthMarksheet").files;
-
-    const twelfthFiles =
-    document.getElementById("twelfthMarksheet").files;
-
-
-
-    if(resumeFiles.length > 0){
-
-        uploadMultipleFiles(
+        await uploadSingleFile(
             "Upload_Resume",
-            resumeFiles
+            file
         );
 
     }
 
 
 
-    if(tenthFiles.length > 0){
+    // =====================================
+    // UPLOAD 10TH FILES
+    // =====================================
 
-        uploadMultipleFiles(
+    for(let file of tenthFiles){
+
+        await uploadSingleFile(
             "Upload_10th_Marksheet",
-            tenthFiles
+            file
         );
 
     }
 
 
 
-    if(twelfthFiles.length > 0){
+    // =====================================
+    // UPLOAD 12TH FILES
+    // =====================================
 
-        uploadMultipleFiles(
+    for(let file of twelfthFiles){
+
+        await uploadSingleFile(
             "Upload_12th_Marksheet",
-            twelfthFiles
+            file
         );
 
     }
@@ -912,5 +880,62 @@ function updateDocuments(){
 }
 
 
+// =====================================
+// SINGLE FILE UPLOAD
+// =====================================
+
+function uploadSingleFile(fieldName,file){
+
+    return ZOHO.CREATOR.API.uploadFile({
+
+        appName : APP_NAME,
+
+        reportName :
+        "Documents_Upload_Report",
+
+        id : documentRecordId,
+
+        fieldName : fieldName,
+
+        file : file
+
+    });
+
+}
 
 
+
+
+
+
+
+
+
+
+// =====================================
+// CLEAR FIELD FILES
+// =====================================
+
+function clearFieldFiles(fieldName){
+
+    let emptyData = {
+
+        data:{}
+
+    };
+
+    emptyData.data[fieldName] = [];
+
+    return ZOHO.CREATOR.API.updateRecord({
+
+        appName:APP_NAME,
+
+        reportName:"Documents_Upload_Report",
+
+        id:documentRecordId,
+
+        data:emptyData
+
+    });
+
+}

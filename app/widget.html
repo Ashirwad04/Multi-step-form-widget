@@ -85,50 +85,86 @@
             </div>
 
         </div>
+<!-- ========================= -->
+<!-- STEP 3 : DOCUMENTS -->
+<!-- ========================= -->
+<!-- STEP 3 -->
 
-        <!-- STEP 3 -->
+<div class="form-step">
 
-      <div class="form-step">
+    <div class="card">
 
-          <h2>Documents Upload</h2>
+        <h2>Documents Upload</h2>
 
-          <!-- Resume -->
+        <!-- RESUME -->
 
-          <label>Upload Resume</label>
+        <div class="upload-section">
 
-          <input type="file" id="resume" multiple>
+            <h3>Upload Resume</h3>
 
-          <!-- 10th Marksheet -->
+            <input type="file"
+                   id="resume"
+                   multiple
+                   onchange="handleFiles(event,'resume')">
 
-          <label>Upload 10th Marksheet</label>
-
-         <input type="file" id="tenthMarksheet" multiple>
-
-          <!-- 12th Marksheet -->
-
-          <label>Upload 12th Marksheet</label>
-
-          <input type="file" id="twelfthMarksheet" multiple>
-
-          <div class="btn-group">
-
-              <button onclick="prevStep(2)">
-                  Back
-              </button>
-
-              <button id="documentBtn" onclick="saveDocuments()">
-                  Submit
-              </button>
-
-          </div>
-
-      </div>
+            <div id="resumePreview"
+                 class="file-preview"></div>
 
         </div>
 
 
+        <!-- 10TH -->
+
+        <div class="upload-section">
+
+            <h3>Upload 10th Marksheet</h3>
+
+            <input type="file"
+                   id="tenthMarksheet"
+                   multiple
+                   onchange="handleFiles(event,'tenth')">
+
+            <div id="tenthPreview"
+                 class="file-preview"></div>
+
+        </div>
+
+
+        <!-- 12TH -->
+
+        <div class="upload-section">
+
+            <h3>Upload 12th Marksheet</h3>
+
+            <input type="file"
+                   id="twelfthMarksheet"
+                   multiple
+                   onchange="handleFiles(event,'twelfth')">
+
+            <div id="twelfthPreview"
+                 class="file-preview"></div>
+
+        </div>
+
+
+        <div class="btn-group">
+
+            <button onclick="prevStep(2)">
+                Back
+            </button>
+
+            <button id="documentBtn"
+                    onclick="saveDocuments()">
+
+                Submit
+
+            </button>
+
+        </div>
+
     </div>
 
+</div>
     <script src="script.js"></script>
 
 </body>
