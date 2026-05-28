@@ -19,29 +19,43 @@
 
         <!-- Progress Bar -->
 
-        <div class="progress-bar">
+       <div class="progress-bar">
 
-            <div class="step active" onclick="goToStep(1)">
-                <span>1</span>
-                <p>Basic</p>
-            </div>
+    <!-- STEP 1 -->
 
-            <div class="line"></div>
+    <div class="step active" onclick="goToStep(1)">
+        <span>1</span>
+        <p>Basic</p>
+    </div>
 
-            <div class="step" onclick="goToStep(2)">
-                <span>2</span>
-                <p>Education</p>
-            </div>
+    <div class="line"></div>
 
-            <div class="line"></div>
+    <!-- STEP 2 -->
 
-            <div class="step" onclick="goToStep(3)">
-                <span>3</span>
-                <p>Documents</p>
-            </div>
+    <div class="step" onclick="goToStep(2)">
+        <span>2</span>
+        <p>Education</p>
+    </div>
 
-        </div>
+    <div class="line"></div>
 
+    <!-- STEP 3 -->
+
+    <div class="step" onclick="goToStep(3)">
+        <span>3</span>
+        <p>Documents</p>
+    </div>
+
+    <div class="line"></div>
+
+    <!-- STEP 4 -->
+
+    <div class="step" onclick="goToStep(4)">
+        <span>4</span>
+        <p>Submit</p>
+    </div>
+
+</div>
         <!-- STEP 1 -->
 
         <div class="form-step active">
@@ -165,6 +179,45 @@
     </div>
 
 </div>
+
+
+
+     <!-- ========================= -->
+<!-- STEP 4 : THANK YOU -->
+<!-- ========================= -->
+
+<div class="form-step">
+
+    <div class="success-card">
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+        <h2>Thanks For Submitting</h2>
+
+        <p>
+            Your details and documents have been submitted successfully.
+        </p>
+
+        <div class="btn-group">
+
+            <button onclick="goBackToDocuments()">
+                Back
+            </button>
+
+            <button onclick="finalSubmit()">
+                Submit
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
     <script src="script.js"></script>
 
 </body>

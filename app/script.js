@@ -101,8 +101,24 @@ function goToStep(step){
 
     }
 
-}
+    // STEP 4
 
+    else if(step == 4){
+
+        if(documentRecordId){
+
+            showStep(4);
+
+        }
+        else{
+
+            alert("Please upload documents first");
+
+        }
+
+    }
+
+}
 
 // ======================================
 // BACK BUTTON
@@ -787,12 +803,51 @@ function saveDocuments(){
 
         }).then(function(response){
 
+            console.log(response);
+
             if(response.code == 3000){
+
+                // SAVE RECORD ID
 
                 documentRecordId =
                 response.data.ID;
 
+                console.log(
+                    "Document Record ID : ",
+                    documentRecordId
+                );
+
+
+
+                // UPLOAD FILES
+
                 uploadAllFiles();
+
+
+
+                // CHANGE BUTTON
+
+                document.getElementById("documentBtn").innerText =
+                "Update Documents";
+
+
+
+                // CHANGE FUNCTION
+
+                document.getElementById("documentBtn").onclick =
+                updateDocuments;
+
+
+
+                // COMPLETE STEP
+
+                steps[2].classList.add("completed");
+
+
+
+                // OPEN STEP 4
+
+                showStep(4);
 
             }
 
@@ -800,11 +855,17 @@ function saveDocuments(){
 
     }
 
-    // UPDATE
+    // UPDATE EXISTING RECORD
 
     else{
 
         uploadAllFiles();
+
+
+
+        // OPEN STEP 4
+
+        showStep(4);
 
     }
 
@@ -875,7 +936,7 @@ async function uploadAllFiles(){
 
 
 
-    alert("Documents Updated Successfully");
+   openFinalStep();
 
 }
 
@@ -937,5 +998,48 @@ function clearFieldFiles(fieldName){
         data:emptyData
 
     });
+
+}
+
+
+
+
+
+
+// =====================================
+// OPEN STEP 4 AFTER DOCUMENTS
+// =====================================
+
+function openFinalStep(){
+
+    steps[2].classList.add("completed");
+
+    showStep(4);
+
+}
+
+
+
+
+
+
+// =====================================
+// BACK TO DOCUMENT STEP
+// =====================================
+
+function goBackToDocuments(){
+
+    showStep(3);
+
+}
+
+
+// =====================================
+// FINAL SUBMIT
+// =====================================
+
+function finalSubmit(){
+
+    alert("Application Submitted Successfully");
 
 }
