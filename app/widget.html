@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+
+    <script src="https://js.zohostatic.com/creator/widgets/version/1.0/widgetsdk-min.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Multi Step Form</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- Progress Bar -->
+
+        <div class="progress-bar">
+
+            <div class="step active" onclick="goToStep(1)">
+                <span>1</span>
+                <p>Basic</p>
+            </div>
+
+            <div class="line"></div>
+
+            <div class="step" onclick="goToStep(2)">
+                <span>2</span>
+                <p>Education</p>
+            </div>
+
+            <div class="line"></div>
+
+            <div class="step" onclick="goToStep(3)">
+                <span>3</span>
+                <p>Documents</p>
+            </div>
+
+        </div>
+
+        <!-- STEP 1 -->
+
+        <div class="form-step active">
+
+            <h2>Basic Details</h2>
+
+            <input type="text" id="name" placeholder="Enter Name">
+
+            <input type="text" id="role" placeholder="Enter Role">
+
+            <input type="text" id="phone" placeholder="Enter Phone Number">
+
+            <button id="basicBtn" onclick="saveBasicDetails()">
+                Next
+            </button>
+
+        </div>
+
+        <!-- STEP 2 -->
+
+        <div class="form-step">
+
+            <h2>Education Details</h2>
+
+            <input type="text" id="college" placeholder="College Name">
+
+            <input type="text" id="degree" placeholder="Degree">
+
+            <input type="text" id="year" placeholder="Passing Year">
+
+            <div class="btn-group">
+
+                <button onclick="prevStep(1)">
+                    Back
+                </button>
+
+                <button id="educationBtn" onclick="saveEducationDetails()">
+                    Submit
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- STEP 3 -->
+
+      <div class="form-step">
+
+          <h2>Documents Upload</h2>
+
+          <!-- Resume -->
+
+          <label>Upload Resume</label>
+
+          <input type="file" id="resume">
+
+          <!-- 10th Marksheet -->
+
+          <label>Upload 10th Marksheet</label>
+
+          <input type="file" id="tenthMarksheet">
+
+          <!-- 12th Marksheet -->
+
+          <label>Upload 12th Marksheet</label>
+
+          <input type="file" id="twelfthMarksheet">
+
+          <div class="btn-group">
+
+              <button onclick="prevStep(2)">
+                  Back
+              </button>
+
+              <button id="documentBtn" onclick="saveDocuments()">
+                  Submit
+              </button>
+
+          </div>
+
+      </div>
+
+        </div>
+
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
+
